@@ -50,6 +50,7 @@
             this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialog3 = new System.Windows.Forms.OpenFileDialog();
             this.button3 = new System.Windows.Forms.Button();
+            this.captureButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -214,11 +215,6 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // openFileDialog2
-            // 
-            this.openFileDialog2.FileName = "openFileDialog2";
-            this.openFileDialog2.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog2_FileOk);
-            // 
             // openFileDialog3
             // 
             this.openFileDialog3.FileName = "openFileDialog3";
@@ -234,11 +230,23 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // captureButton
+            // 
+            this.captureButton.Location = new System.Drawing.Point(97, 676);
+            this.captureButton.Name = "captureButton";
+            this.captureButton.Size = new System.Drawing.Size(119, 23);
+            this.captureButton.TabIndex = 9;
+            this.captureButton.Text = "Capture Image";
+            this.captureButton.UseVisualStyleBackColor = true;
+            this.captureButton.Visible = false;
+            this.captureButton.Click += new System.EventHandler(this.captureButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1149, 775);
+            this.Controls.Add(this.captureButton);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -287,6 +295,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog2;
         private System.Windows.Forms.OpenFileDialog openFileDialog3;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button captureButton;
     }
 }
 

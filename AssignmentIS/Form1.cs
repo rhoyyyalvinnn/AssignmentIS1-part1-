@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using AForge.Video;
+using AForge.Video.DirectShow;
 
 
 namespace AssignmentIS
 {
     public partial class Form1 : Form
     {
-        Bitmap loaded, processed, imageB, imageA, resultImage;
+        Bitmap loaded, processed,   imageB, imageA, resultImage;
+        private FilterInfoCollection videoDevices; // List of available webcams
+        private VideoCaptureDevice videoSource;    // The selected webcam
+
 
         public Form1()
         {
@@ -145,18 +144,90 @@ namespace AssignmentIS
 
 
 
+
+
+
+
+
         //PART 2 of the assignment
+        // hide atm to try to use webcam to get imageB
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    openFileDialog2.ShowDialog();
+        //}
+
+
 
         private void button1_Click(object sender, EventArgs e)
         {
-            openFileDialog2.ShowDialog();
+            // Check for available video devices
+            videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            if (videoDevices.Count == 0)
+            {
+                MessageBox.Show("No webcam found.");
+                return;
+            }
+
+            // Use the first available webcam
+            videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
+
+            // Set the NewFrame event handler
+            videoSource.NewFrame += new NewFrameEventHandler(videoSource_NewFrame);
+            captureButton.Visible = true;
+
+            // Start capturing video
+            videoSource.Start();
         }
 
-        private void openFileDialog2_FileOk(object sender, CancelEventArgs e)
+        private void captureButton_Click(object sender, EventArgs e)
         {
-            imageB = new Bitmap(openFileDialog2.FileName);
+            if (pictureBox3.Image != null)
+            {
+                // Capture the current frame displayed in the PictureBox
+                imageB = new Bitmap(pictureBox3.Image);
+
+                // Stop the video source to "freeze" the image
+                if (videoSource != null && videoSource.IsRunning)
+                {
+                    videoSource.SignalToStop();
+                    videoSource.WaitForStop();
+                }
+
+                // Display the captured image in pictureBox3
+                pictureBox3.Image = imageB;
+
+                // Optionally hide the capture button after capturing
+                captureButton.Visible = false;
+
+                // Optionally, display a message or log to confirm the capture
+                MessageBox.Show("Image captured and assigned to imageB!");
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Ensure the video source is properly stopped when the form is closed
+            if (videoSource != null && videoSource.IsRunning)
+            {
+                videoSource.SignalToStop();
+                videoSource.WaitForStop();
+            }
+        }
+
+        private void videoSource_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            // Display the current frame in the PictureBox
+            imageB = (Bitmap)eventArgs.Frame.Clone();
             pictureBox3.Image = imageB;
         }
+
+
+        //hidden atm 
+        //private void openFileDialog2_FileOk(object sender, CancelEventArgs e)
+        //{
+        //    imageB = new Bitmap(openFileDialog2.FileName);
+        //    pictureBox3.Image = imageB;
+        //}
 
 
         private void button2_Click(object sender, EventArgs e)
@@ -173,25 +244,43 @@ namespace AssignmentIS
 
         private void button3_Click(object sender, EventArgs e)
         {
-            resultImage = new Bitmap(imageB.Width, imageB.Height);
-            Color mygreen = Color.FromArgb(0, 255, 0);
+            // Ensure that both images are non-null and have dimensions
+            if (imageA == null || imageB == null)
+            {
+                MessageBox.Show("Both images must be loaded.");
+                return;
+            }
+
+            // Use the minimum width and height to avoid out-of-bounds issues
+            int minWidth = Math.Min(imageA.Width, imageB.Width);
+            int minHeight = Math.Min(imageA.Height, imageB.Height);
+            resultImage = new Bitmap(minWidth, minHeight);
+
+            Color mygreen = Color.FromArgb(0, 255, 0); // Chroma key green color
             int greygreen = (mygreen.R + mygreen.G + mygreen.B) / 3;
             int threshold = 60;
 
-            for (int x = 0; x < imageB.Width; x++) 
+            for (int x = 0; x < minWidth; x++)
             {
-                for (int y = 0; y < imageB.Height; y++)
+                for (int y = 0; y < minHeight; y++)
                 {
+                    // Retrieve the pixel colors from both images
                     Color pixel = imageB.GetPixel(x, y);
-                    Color backPixel = imageA.GetPixel(x, y); 
-                    int grey = (pixel.R + pixel.G + backPixel.B) / 2;
+                    Color backPixel = imageA.GetPixel(x, y);
+
+                    // Calculate grayscale value for chroma keying
+                    int grey = (pixel.R + pixel.G + pixel.B) / 3;  // Only use `pixel`, not `backPixel.B`
                     int subtractvalue = Math.Abs(grey - greygreen);
+
+                    // If the difference is greater than the threshold, use the background pixel
                     if (subtractvalue > threshold)
                         resultImage.SetPixel(x, y, backPixel);
                     else
                         resultImage.SetPixel(x, y, pixel);
                 }
             }
+
+            // Display the result image
             pictureBox5.Image = resultImage;
         }
 
