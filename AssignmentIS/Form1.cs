@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace AssignmentIS
 {
     public partial class Form1 : Form
     {
-        Bitmap loaded, processed;
+        Bitmap loaded, processed, imageB, imageA, resultImage;
 
         public Form1()
         {
@@ -57,6 +58,12 @@ namespace AssignmentIS
             pictureBox2.Image = processed;
         }
 
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
 
         private void greyscalingToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -81,7 +88,6 @@ namespace AssignmentIS
         {
             processed = new Bitmap(loaded.Width, loaded.Height);
             Color pixel;
-            int ave;
             for (int x = 0; x < loaded.Width; x++)
             {
                 for (int y = 0; y < loaded.Height; y++)
@@ -136,6 +142,67 @@ namespace AssignmentIS
             }
             pictureBox2.Image = processed;
         }
+
+
+
+        //PART 2 of the assignment
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            openFileDialog2.ShowDialog();
+        }
+
+        private void openFileDialog2_FileOk(object sender, CancelEventArgs e)
+        {
+            imageB = new Bitmap(openFileDialog2.FileName);
+            pictureBox3.Image = imageB;
+        }
+
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            openFileDialog3.ShowDialog();
+        }
+
+        private void openFileDialog3_FileOk(object sender, CancelEventArgs e)
+        {
+            imageA = new Bitmap(openFileDialog3.FileName);
+            pictureBox4.Image = imageA;
+        }
+
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            resultImage = new Bitmap(imageB.Width, imageB.Height);
+            Color mygreen = Color.FromArgb(0, 255, 0);
+            int greygreen = (mygreen.R + mygreen.G + mygreen.B) / 3;
+            int threshold = 60;
+
+            for (int x = 0; x < imageB.Width; x++) 
+            {
+                for (int y = 0; y < imageB.Height; y++)
+                {
+                    Color pixel = imageB.GetPixel(x, y);
+                    Color backPixel = imageA.GetPixel(x, y); 
+                    int grey = (pixel.R + pixel.G + backPixel.B) / 2;
+                    int subtractvalue = Math.Abs(grey - greygreen);
+                    if (subtractvalue > threshold)
+                        resultImage.SetPixel(x, y, backPixel);
+                    else
+                        resultImage.SetPixel(x, y, pixel);
+                }
+            }
+            pictureBox5.Image = resultImage;
+        }
+
+
+
+
+
+
+
+
+
 
 
     }
