@@ -51,6 +51,10 @@
             this.openFileDialog3 = new System.Windows.Forms.OpenFileDialog();
             this.button3 = new System.Windows.Forms.Button();
             this.captureButton = new System.Windows.Forms.Button();
+            this.filtersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convolutionFiltersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.comboBoxFilters = new System.Windows.Forms.ComboBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -63,7 +67,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.dIPToolStripMenuItem});
+            this.dIPToolStripMenuItem,
+            this.filtersToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1149, 24);
@@ -241,11 +246,48 @@
             this.captureButton.Visible = false;
             this.captureButton.Click += new System.EventHandler(this.captureButton_Click);
             // 
+            // filtersToolStripMenuItem
+            // 
+            this.filtersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.convolutionFiltersToolStripMenuItem});
+            this.filtersToolStripMenuItem.Name = "filtersToolStripMenuItem";
+            this.filtersToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.filtersToolStripMenuItem.Text = "Filters";
+            // 
+            // convolutionFiltersToolStripMenuItem
+            // 
+            this.convolutionFiltersToolStripMenuItem.Name = "convolutionFiltersToolStripMenuItem";
+            this.convolutionFiltersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.convolutionFiltersToolStripMenuItem.Text = "Convolution Filters";
+            this.convolutionFiltersToolStripMenuItem.Click += new System.EventHandler(this.convolutionFiltersToolStripMenuItem_Click);
+            // 
+            // comboBoxFilters
+            // 
+            this.comboBoxFilters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFilters.FormattingEnabled = true;
+            this.comboBoxFilters.Location = new System.Drawing.Point(457, 354);
+            this.comboBoxFilters.Name = "comboBoxFilters";
+            this.comboBoxFilters.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxFilters.TabIndex = 10;
+            this.comboBoxFilters.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(632, 351);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 11;
+            this.button4.Text = "Apply Filter";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1149, 775);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.comboBoxFilters);
             this.Controls.Add(this.captureButton);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -259,6 +301,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -296,6 +339,10 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog3;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button captureButton;
+        private System.Windows.Forms.ToolStripMenuItem filtersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem convolutionFiltersToolStripMenuItem;
+        private System.Windows.Forms.ComboBox comboBoxFilters;
+        private System.Windows.Forms.Button button4;
     }
 }
 

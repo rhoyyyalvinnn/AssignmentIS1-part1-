@@ -18,6 +18,13 @@ namespace AssignmentIS
         public Form1()
         {
             InitializeComponent();
+
+            // Populate ComboBox with filter options
+            comboBoxFilters.Items.AddRange(new string[]
+            {
+        "Edge Detection", "Sharpen", "Gaussian Blur", "Mean Removal", "Embossing"
+            });
+            comboBoxFilters.SelectedIndex = 0; // Set default selection
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -214,6 +221,8 @@ namespace AssignmentIS
             }
         }
 
+
+
         private void videoSource_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
             // Display the current frame in the PictureBox
@@ -284,11 +293,127 @@ namespace AssignmentIS
             pictureBox5.Image = resultImage;
         }
 
+        private void convolutionFiltersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ApplyConvolutionFilter(comboBoxFilters.SelectedItem.ToString());
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ApplyConvolutionFilter(comboBoxFilters.SelectedItem.ToString());
+        }
 
 
 
+        private double[,] GetKernel(string kernelName)
+        {
+            switch (kernelName)
+            {
+                case "Edge Detection":
+                    return new double[,]
+                    {
+                { -1, -1, -1 },
+                { -1,  8, -1 },
+                { -1, -1, -1 }
+                    };
+
+                case "Sharpen":
+                    return new double[,]
+                    {
+                { 0, -1,  0 },
+                { -1,  5, -1 },
+                { 0, -1,  0 }
+                    };
+
+                case "Gaussian Blur":
+                    return new double[,]
+                    {
+                { 0.0625, 0.125, 0.0625 },
+                { 0.125,  0.25,  0.125 },
+                { 0.0625, 0.125, 0.0625 }
+                    };
+
+                case "Mean Removal":
+                    return new double[,]
+                    {
+                { -1, -1, -1 },
+                { -1,  9, -1 },
+                { -1, -1, -1 }
+                    };
+
+                case "Embossing":
+                    return new double[,]
+                    {
+                { -2, -1,  0 },
+                { -1,  1,  1 },
+                {  0,  1,  2 }
+                    };
+
+                default:
+                    // Return an identity kernel if the filter name doesn't match
+                    return new double[,]
+                    {
+                { 0, 0, 0 },
+                { 0, 1, 0 },
+                { 0, 0, 0 }
+                    };
+            }
+        }
 
 
+        private void ApplyConvolutionFilter(string kernelName)
+        {
+            if (loaded == null)
+            {
+                MessageBox.Show("No image loaded.");
+                return;
+            }
+
+            double[,] kernel = GetKernel(kernelName);
+            int kernelSize = kernel.GetLength(0);
+            int offset = kernelSize / 2;
+            processed = new Bitmap(loaded.Width, loaded.Height);
+
+            for (int x = offset; x < loaded.Width - offset; x++)
+            {
+                for (int y = offset; y < loaded.Height - offset; y++)
+                {
+                    double red = 0, green = 0, blue = 0;
+
+                    for (int i = 0; i < kernelSize; i++)
+                    {
+                        for (int j = 0; j < kernelSize; j++)
+                        {
+                            int pixelX = x + i - offset;
+                            int pixelY = y + j - offset;
+                            Color pixel = loaded.GetPixel(pixelX, pixelY);
+
+                            red += pixel.R * kernel[i, j];
+                            green += pixel.G * kernel[i, j];
+                            blue += pixel.B * kernel[i, j];
+                        }
+                    }
+
+                    int r = Math.Min(Math.Max((int)red, 0), 255);
+                    int g = Math.Min(Math.Max((int)green, 0), 255);
+                    int b = Math.Min(Math.Max((int)blue, 0), 255);
+
+                    processed.SetPixel(x, y, Color.FromArgb(r, g, b));
+                }
+            }
+
+            pictureBox2.Image = processed;
+        }
 
 
 
