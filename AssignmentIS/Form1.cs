@@ -115,10 +115,27 @@ namespace AssignmentIS
         }
 
 
+        private void verticalMirrorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Create a new bitmap with the same dimensions as the loaded image.
+            processed = new Bitmap(loaded.Width, loaded.Height);
 
+            // Iterate over each pixel column-wise.
+            for (int x = 0; x < loaded.Width; x++)
+            {
+                for (int y = 0; y < loaded.Height; y++)
+                {
+                    // Get the pixel from the original image.
+                    Color pixelColor = loaded.GetPixel(x, y);
 
+                    // Set the pixel in the processed image at the mirrored vertical position.
+                    processed.SetPixel(x, loaded.Height - y - 1, pixelColor);
+                }
+            }
 
-
+            // Refresh the picture box to display the processed image.
+            pictureBox2.Image = processed;
+        }
 
 
 
@@ -302,6 +319,8 @@ namespace AssignmentIS
         {
 
         }
+
+
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
